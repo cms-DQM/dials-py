@@ -1,0 +1,13 @@
+# For VSCode install the extension: https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+# top-most EditorConfig file
+root = true
+
+# Config for all files
+[*]
+insert_final_newline = true
+
+# Config for Python (uncomment what you need)
+[*.py]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
