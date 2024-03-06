@@ -1,12 +1,25 @@
 [tool.poetry]
-name = "dials-py"
+name = "cmsdials"
 version = "0.1.0"
 description = "The Python api client interface to DIALS service"
 authors = ["Gabriel Moreira <gabrielmscampos@gmail.com>"]
 readme = "README.md"
+include = ["LICENSE"]
+repository = "https://github.com/cms-DQM/dials-py"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+packages = [
+    { include = "cmsdials" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pydantic = "^2.6.3"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]
