@@ -9,15 +9,15 @@ class Lumisection(BaseModel):
     id: int
     ls_number: int
     date: AwareDatetime
-    oms_zerobias_rate: float | None
+    oms_zerobias_rate: Optional[float]
     run: int
 
 
 class PaginatedLumisectionList(BaseModel):
-    count: int | None
-    next: AnyUrl | None
-    previous: AnyUrl | None
-    results: list[Lumisection] | None
+    count: int
+    next: Optional[AnyUrl]
+    previous: Optional[AnyUrl]
+    results: list[Lumisection]
 
 
 class LumisectionFilters(OBaseModel):

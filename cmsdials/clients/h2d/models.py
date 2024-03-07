@@ -11,15 +11,15 @@ class LumisectionHistogram2D(BaseModel):
     run_number: int
     date: AwareDatetime
     title: str = Field(..., max_length=220)
-    entries: int | None
-    data: list[list[float]] | None
-    x_min: float | None
-    x_max: float | None
-    x_bin: int | None
-    y_max: float | None
-    y_min: float | None
-    y_bin: int | None
-    source_data_file: int | None = Field(
+    entries: int
+    data: list[list[float]]
+    x_min: float
+    x_max: float
+    x_bin: int
+    y_max: float
+    y_min: float
+    y_bin: int
+    source_data_file: int = Field(
         ...,
         description="Source data file that the specific Histogram was read from, if any",
     )
@@ -27,10 +27,10 @@ class LumisectionHistogram2D(BaseModel):
 
 
 class PaginatedLumisectionHistogram2DList(BaseModel):
-    count: int | None
-    next: AnyUrl | None
-    previous: AnyUrl | None
-    results: list[LumisectionHistogram2D] | None
+    count: int
+    next: Optional[AnyUrl]
+    previous: Optional[AnyUrl]
+    results: list[LumisectionHistogram2D]
 
 
 class LumisectionHistogram2DFilters(OBaseModel):
