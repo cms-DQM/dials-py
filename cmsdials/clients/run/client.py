@@ -4,6 +4,6 @@ from .models import PaginatedRunList, Run, RunFilters
 
 class RunClient(BaseAuthorizedAPIClient):
     data_model = Run
-    pagination_model = RunFilters
-    filter_class = PaginatedRunList
+    pagination_model = PaginatedRunList
+    filter_class = RunFilters
     lookup_url = "run/"

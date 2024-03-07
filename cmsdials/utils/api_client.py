@@ -3,8 +3,10 @@ from math import ceil
 from typing import Optional
 
 import requests
+from requests.exceptions import HTTPError
 
 from ..auth._base import BaseCredentials
+from ..utils.logger import logger
 
 
 class BaseAPIClient:
@@ -46,7 +48,13 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         headers = {"accept": "application/json"}
         self.creds.before_request(headers)
         response = requests.get(endpoint_url, headers=headers)
-        response.raise_for_status()
+
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            logger.info(f"Api raw response: {response.text}")
+            raise err
+
         response = response.json()
         return self.data_model(**response)
 
@@ -56,7 +64,13 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         headers = {"accept": "application/json"}
         self.creds.before_request(headers)
         response = requests.get(endpoint_url, headers=headers, params=filters.cleandict())
-        response.raise_for_status()
+
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            logger.info(f"Api raw response: {response.text}")
+            raise err
+
         response = response.json()
         return self.pagination_model(**response)
 
