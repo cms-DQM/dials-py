@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import List, Optional
 
-from pydantic import AnyUrl, AwareDatetime, BaseModel, Field
+from pydantic import AnyUrl, BaseModel, Field
 
 from ...utils.base_model import OBaseModel
 
@@ -10,8 +11,8 @@ class BadFileIndex(BaseModel):
     file_path: str = Field(..., description="Path where the file is stored", max_length=255)
     data_era: str = Field(..., description="The era that the data refers to (e.g. 2018A)", max_length=7)
     st_size: float = Field(..., description="The data file's size in bytes")
-    st_ctime: AwareDatetime = Field(..., description="Time of files's last status change in filesystem")
-    st_itime: AwareDatetime = Field(..., description="Time when file was indexed in database")
+    st_ctime: datetime = Field(..., description="Time of files's last status change in filesystem")
+    st_itime: datetime = Field(..., description="Time when file was indexed in database")
     err: str = Field(..., description="Error message", max_length=255)
 
 

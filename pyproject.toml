@@ -18,8 +18,9 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pydantic = "^2.6.3"
 requests = "^2.31.0"
+pydantic = "<2, >=1"
+typing-extensions = "<4.6.0, >=3.6.6"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import Optional
 
-from pydantic import AnyUrl, AwareDatetime, BaseModel, Field
+from pydantic import AnyUrl, BaseModel, Field
 
 from ...utils.base_model import OBaseModel
 
@@ -9,7 +10,7 @@ class LumisectionHistogram2D(BaseModel):
     id: int
     ls_number: int
     run_number: int
-    date: AwareDatetime
+    date: datetime
     title: str = Field(..., max_length=220)
     entries: int
     data: list[list[float]]

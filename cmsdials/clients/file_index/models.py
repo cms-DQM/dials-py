@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import List, Optional
 
-from pydantic import AnyUrl, AwareDatetime, BaseModel, Field
+from pydantic import AnyUrl, BaseModel, Field
 
 from ...utils.base_model import OBaseModel
 
@@ -19,8 +20,8 @@ class FileIndex(BaseModel):
         description="Number of histogram entries that have been extracted from the file",
     )
     st_size: float = Field(..., description="The data file's size in bytes")
-    st_ctime: AwareDatetime = Field(..., description="Time of files's last status change in filesystem")
-    st_itime: AwareDatetime = Field(..., description="Time when file was indexed in database")
+    st_ctime: datetime = Field(..., description="Time of files's last status change in filesystem")
+    st_itime: datetime = Field(..., description="Time when file was indexed in database")
     status: str = Field(
         ...,
         description="Indicate the processing status of run-histogram within the file",
