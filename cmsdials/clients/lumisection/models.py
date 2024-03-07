@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import List, Optional
 
-from pydantic import AnyUrl, AwareDatetime, BaseModel
+from pydantic import AnyUrl, BaseModel
 
 from ...utils.base_model import OBaseModel
 
@@ -8,7 +9,7 @@ from ...utils.base_model import OBaseModel
 class Lumisection(BaseModel):
     id: int
     ls_number: int
-    date: AwareDatetime
+    date: datetime
     oms_zerobias_rate: Optional[float]
     run: int
 
