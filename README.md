@@ -131,6 +131,14 @@ dials.lumi.list_all(LumisectionFilters(run_number=360392))
 dials.run.list_all(RunFilters(min_run_number=360392, max_run_number=365000))
 ```
 
+### Dials MEs
+
+It is possible to inspect the list of selected MEs considered in DIALS during ETL requesting the endpoint `configured-mes` trough the method:
+
+```python
+dials.lumi.configured_mes()
+```
+
 ## Usage with local DIALS
 
 All classes that interface the DIALS service inherits the class `BaseAPIClient` which propagate the `base_url`, `route` and `version` attributes with production values. In order to use dials-py with a local version of DIALS it is possible to overwrite those attributes when instantiating the `AuthClient` and the `Dials` client, for example:
