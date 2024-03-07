@@ -29,10 +29,10 @@ class FileIndex(BaseModel):
 
 
 class PaginatedFileIndexList(BaseModel):
-    count: int | None
-    next: AnyUrl | None
-    previous: AnyUrl | None
-    results: List[FileIndex] | None
+    count: int
+    next: Optional[AnyUrl]
+    previous: Optional[AnyUrl]
+    results: List[FileIndex]
 
 
 class FileIndexFilters(OBaseModel):

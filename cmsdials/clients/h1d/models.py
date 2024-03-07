@@ -21,10 +21,10 @@ class LumisectionHistogram1D(BaseModel):
 
 
 class PaginatedLumisectionHistogram1DList(BaseModel):
-    count: int | None
-    next: AnyUrl | None
-    previous: AnyUrl | None
-    results: List[LumisectionHistogram1D] | None
+    count: int
+    next: Optional[AnyUrl]
+    previous: Optional[AnyUrl]
+    results: List[LumisectionHistogram1D]
 
 
 class LumisectionHistogram1DFilters(OBaseModel):
