@@ -6,8 +6,8 @@ from .models import ConfiguredMEs, Lumisection, LumisectionFilters, PaginatedLum
 
 class LumisectionClient(BaseAuthorizedAPIClient):
     data_model = Lumisection
-    pagination_model = LumisectionFilters
-    filter_class = PaginatedLumisectionList
+    pagination_model = PaginatedLumisectionList
+    filter_class = LumisectionFilters
     lookup_url = "lumisection/"
 
     def configured_mes(self):

@@ -4,6 +4,6 @@ from .models import LumisectionHistogram1D, LumisectionHistogram1DFilters, Pagin
 
 class LumisectionHistogram1DClient(BaseAuthorizedAPIClient):
     data_model = LumisectionHistogram1D
-    pagination_model = LumisectionHistogram1DFilters
-    filter_class = PaginatedLumisectionHistogram1DList
+    pagination_model = PaginatedLumisectionHistogram1DList
+    filter_class = LumisectionHistogram1DFilters
     lookup_url = "lumisection-h1d/"
