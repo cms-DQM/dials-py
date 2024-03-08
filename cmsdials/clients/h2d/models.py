@@ -46,3 +46,5 @@ class LumisectionHistogram2DFilters(OBaseModel):
     run_number: Optional[int] = None
     title: Optional[str] = None
     title_contains: Optional[str] = None
+    era: Optional[str] = None
+    dqmio_filepath_contains: Optional[str] = None

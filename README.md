@@ -56,7 +56,7 @@ creds = Credentials.from_creds_file()
 dials = Dials(creds, nthreads=2)
 
 # Getting h1d data
-data = dials.h1d.list_all(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"))
+data = dials.h1d.list_all(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
 ```
 
 ## Available endpoints
@@ -124,11 +124,11 @@ dials.file_index.list(FileIndexFilters(page="10"))
 
 dials.h1d.list(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2", page="15"))
 
-dials.h2d.list_all(LumisectionHistogram2DFilters(title_contains="EEOT digi occupancy EE +", min_entries=100, min_run_number=360392, max_run_number=365000))
+dials.h2d.list_all(LumisectionHistogram2DFilters(title_contains="EEOT digi occupancy EE +", min_entries=100, min_run_number=360392, max_run_number=365000), max_pages=5)
 
-dials.lumi.list_all(LumisectionFilters(run_number=360392))
+dials.lumi.list_all(LumisectionFilters(run_number=360392), max_pages=5)
 
-dials.run.list_all(RunFilters(min_run_number=360392, max_run_number=365000))
+dials.run.list_all(RunFilters(min_run_number=360392, max_run_number=365000), max_pages=5)
 ```
 
 ### Dials MEs
@@ -156,5 +156,5 @@ auth = AuthClient(base_url=DEV_URL)
 creds = Credentials.from_creds_file(cache_dir=DEV_CACHE_DIR, client=auth)  # Make sure to specify the auth client with overwritten values, using another cache_dir is recommended
 dials = Dials(creds, nthreads=2, base_url=DEV_URL)
 
-dials.h2d.list_all(LumisectionHistogram2DFilters(title_contains="EEOT digi occupancy EE +", min_entries=100, min_run_number=360392, max_run_number=365000))
+dials.h2d.list_all(LumisectionHistogram2DFilters(title_contains="EEOT digi occupancy EE +", min_entries=100, min_run_number=360392, max_run_number=365000), max_pages=5)
 ```
