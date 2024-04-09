@@ -42,5 +42,5 @@ class LumisectionHistogram2DFilters(OBaseModel):
     min_entries: Optional[int] = None
     era: Optional[str] = None
     campaign: Optional[str] = None
-    dataset: Optional[str] = None
+    primary_dataset: Optional[str] = None
     file_id: Optional[int] = None

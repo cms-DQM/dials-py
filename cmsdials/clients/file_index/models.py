@@ -11,7 +11,7 @@ class FileIndex(BaseModel):
     file_size: int
     era: str = Field(..., max_length=5)
     campaign: str = Field(..., max_length=15)
-    dataset: str = Field(..., max_length=50)
+    primary_dataset: str = Field(..., max_length=50)
     creation_date: datetime
     last_modification_date: datetime
     logical_file_name: str
@@ -31,6 +31,6 @@ class FileIndexFilters(OBaseModel):
     min_size: Optional[int] = None
     era: Optional[str] = None
     campaign: Optional[str] = None
-    dataset: Optional[str] = None
+    primary_dataset: Optional[str] = None
     logical_file_name: Optional[str] = None
     status: Optional[str] = None
