@@ -38,15 +38,29 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
     filter_class = None
     lookup_url = None
 
-    def __init__(self, creds: BaseCredentials, nthreads: Optional[int] = None, *args: str, **kwargs: str) -> None:
+    def __init__(
+        self,
+        creds: BaseCredentials,
+        workspace: Optional[str] = None,
+        nthreads: Optional[int] = None,
+        *args: str,
+        **kwargs: str,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.creds = creds
+        self.workspace = workspace
         self.nthreads = nthreads or 1
+
+    def __build_headers(self) -> dict:
+        base = {"accept": "application/json"}
+        if self.workspace is not None:
+            base["Workspace"] = self.workspace
+        self.creds.before_request(base)
+        return base
 
     def get(self, id: str):
         endpoint_url = self.api_url + self.lookup_url + str(id) + "/"
-        headers = {"accept": "application/json"}
-        self.creds.before_request(headers)
+        headers = self.__build_headers()
         response = requests.get(endpoint_url, headers=headers)
 
         try:
@@ -61,8 +75,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
     def list(self, filters=None):
         filters = filters or self.filter_class()
         endpoint_url = self.api_url + self.lookup_url
-        headers = {"accept": "application/json"}
-        self.creds.before_request(headers)
+        headers = self.__build_headers()
         response = requests.get(endpoint_url, headers=headers, params=filters.cleandict())
 
         try:
