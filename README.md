@@ -59,6 +59,14 @@ dials = Dials(creds, nthreads=2)
 data = dials.h1d.list_all(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
 ```
 
+### Workspace
+
+Users are automatically routed to a workspace based on e-groups, but it is possible to overwrite this configuration and inspect data from others workspaces:
+
+```python
+dials = Dials(creds, workspace="jetmet", nthreads=2)
+```
+
 ## Available endpoints
 
 This package interacts with DIALS api endpoints using underlying classes in `Dials` object.
@@ -150,7 +158,7 @@ from cmsdials import Dials
 from cmsdials.filters import LumisectionHistogram2DFilters
 
 DEV_URL = "http://localhost:8000/"
-DEV_CACHE_DIR = ".cache-dev
+DEV_CACHE_DIR = ".cache-dev"
 
 auth = AuthClient(base_url=DEV_URL)
 creds = Credentials.from_creds_file(cache_dir=DEV_CACHE_DIR, client=auth)  # Make sure to specify the auth client with overwritten values, using another cache_dir is recommended
