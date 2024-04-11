@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import AnyUrl, BaseModel
 
@@ -7,11 +6,10 @@ from ...utils.base_model import OBaseModel
 
 
 class Lumisection(BaseModel):
-    id: int
+    ls_id: int
     ls_number: int
-    date: datetime
-    oms_zerobias_rate: Optional[float]
-    run: int
+    th1_count: int
+    th2_count: int
 
 
 class PaginatedLumisectionList(BaseModel):
@@ -22,14 +20,10 @@ class PaginatedLumisectionList(BaseModel):
 
 
 class LumisectionFilters(OBaseModel):
-    ls_number: Optional[int] = None
-    max_ls_number: Optional[int] = None
-    max_run_number: Optional[int] = None
-    min_ls_number: Optional[int] = None
-    min_run_number: Optional[int] = None
     page: Optional[str] = None
     run_number: Optional[int] = None
-
-
-class ConfiguredMEs(BaseModel):
-    mes: List[str]
+    ls_number: Optional[int] = None
+    min_ls_number: Optional[int] = None
+    max_ls_number: Optional[int] = None
+    min_run_number: Optional[int] = None
+    max_run_number: Optional[int] = None

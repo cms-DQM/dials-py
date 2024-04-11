@@ -59,6 +59,14 @@ dials = Dials(creds, nthreads=2)
 data = dials.h1d.list_all(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
 ```
 
+### Workspace
+
+Users are automatically routed to a workspace based on e-groups, but it is possible to overwrite this configuration and inspect data from others workspaces:
+
+```python
+dials = Dials(creds, workspace="jetmet", nthreads=2)
+```
+
 ## Available endpoints
 
 This package interacts with DIALS api endpoints using underlying classes in `Dials` object.
@@ -66,7 +74,6 @@ This package interacts with DIALS api endpoints using underlying classes in `Dia
 ### Retrieving a specific object using `get`
 
 ```python
-dials.bad_file_index.get(id=1)
 dials.file_index.get(id=1)
 dials.h1d.get(id=1)
 dials.h2d.get(id=1)
@@ -79,7 +86,6 @@ dials.run.get(id=1)
 It is possible to get a list of entries from those endpoint using the `list` and `list_all` methods, the `list` method will fetch only one page and the `list_all` will fetch all available pages:
 
 ```python
-dials.bad_file_index.list()
 dials.file_index.list()
 dials.h1d.list()
 dials.h2d.list()
@@ -90,7 +96,6 @@ dials.run.list()
 ### Retrieving all available pages of a list of objects using `list_all`
 
 ```python
-dials.bad_file_index.list_all()
 dials.file_index.list_all()
 dials.h1d.list_all()
 dials.h2d.list_all()
@@ -110,7 +115,6 @@ Keep in mind that calling those methods without any filter can take a lot of tim
 
 ```python
 from cmsdials.filters import (
-    BadFileIndexFilters,
     FileIndexFilters,
     LumisectionHistogram1DFilters,
     LumisectionHistogram2DFilters,
@@ -118,7 +122,6 @@ from cmsdials.filters import (
     RunFilters
 )
 
-dials.bad_file_index.list(BadFileIndexFilters(path_contains="ZeroBias"))
 
 dials.file_index.list(FileIndexFilters(page="10"))
 
@@ -150,7 +153,7 @@ from cmsdials import Dials
 from cmsdials.filters import LumisectionHistogram2DFilters
 
 DEV_URL = "http://localhost:8000/"
-DEV_CACHE_DIR = ".cache-dev
+DEV_CACHE_DIR = ".cache-dev"
 
 auth = AuthClient(base_url=DEV_URL)
 creds = Credentials.from_creds_file(cache_dir=DEV_CACHE_DIR, client=auth)  # Make sure to specify the auth client with overwritten values, using another cache_dir is recommended
