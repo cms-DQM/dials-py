@@ -7,10 +7,14 @@ from ...utils.base_model import OBaseModel
 
 class LumisectionHistogram2D(BaseModel):
     hist_id: int
+    dataset: str = Field(..., max_length=255)
+    me: str = Field(..., max_length=255)
+    dataset_id: int
     file_id: int
     run_number: int
+    ls_number: int
+    me_id: int
     ls_id: int
-    title: str = Field(..., max_length=220)
     x_min: float
     x_max: float
     x_bin: float
@@ -18,7 +22,7 @@ class LumisectionHistogram2D(BaseModel):
     y_max: float
     y_bin: float
     entries: int
-    data: list[float]
+    data: list[list[float]]
 
 
 class PaginatedLumisectionHistogram2DList(BaseModel):
@@ -29,18 +33,21 @@ class PaginatedLumisectionHistogram2DList(BaseModel):
 
 
 class LumisectionHistogram2DFilters(OBaseModel):
-    page: Optional[str] = None
-    run_number: Optional[int] = None
-    ls_number: Optional[int] = None
-    ls_id: Optional[int] = None
-    title: Optional[str] = None
-    min_run_number: Optional[int] = None
-    max_run_number: Optional[int] = None
-    min_ls_number: Optional[int] = None
-    max_ls_number: Optional[int] = None
-    title_contains: Optional[str] = None
-    min_entries: Optional[int] = None
-    era: Optional[str] = None
-    campaign: Optional[str] = None
-    primary_dataset: Optional[str] = None
+    page: Optional[int] = None
+    dataset_id: Optional[int] = None
     file_id: Optional[int] = None
+    run_number: Optional[int] = None
+    run_number__lte: Optional[int] = None
+    run_number__gte: Optional[int] = None
+    ls_number: Optional[int] = None
+    ls_numbet__lte: Optional[int] = None
+    ls_number__gte: Optional[int] = None
+    me_id: Optional[int] = None
+    ls_id: Optional[int] = None
+    entries__gte: Optional[int] = None
+    dataset: Optional[str] = None
+    dataset__regex: Optional[str] = None
+    logical_file_name: Optional[str] = None
+    logical_file_name__regex: Optional[str] = None
+    me: Optional[str] = None
+    me__regex: Optional[str] = None

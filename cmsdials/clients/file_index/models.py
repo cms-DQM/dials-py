@@ -7,11 +7,10 @@ from ...utils.base_model import OBaseModel
 
 
 class FileIndex(BaseModel):
+    dataset_id: int
+    dataset: str = Field(..., max_length=255)
     file_id: int
     file_size: int
-    era: str = Field(..., max_length=5)
-    campaign: str = Field(..., max_length=15)
-    primary_dataset: str = Field(..., max_length=50)
     creation_date: datetime
     last_modification_date: datetime
     logical_file_name: str
@@ -27,10 +26,11 @@ class PaginatedFileIndexList(BaseModel):
 
 
 class FileIndexFilters(OBaseModel):
-    page: Optional[str] = None
-    min_size: Optional[int] = None
-    era: Optional[str] = None
-    campaign: Optional[str] = None
-    primary_dataset: Optional[str] = None
+    page: Optional[int] = None
+    dataset_id: Optional[int] = None
     logical_file_name: Optional[str] = None
+    logical_file_name__regex: Optional[str] = None
     status: Optional[str] = None
+    min_size: Optional[int] = None
+    dataset: Optional[str] = None
+    dataset__regex: Optional[str] = None

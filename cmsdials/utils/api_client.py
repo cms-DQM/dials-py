@@ -51,16 +51,16 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         self.workspace = workspace
         self.nthreads = nthreads or 1
 
-    def __build_headers(self) -> dict:
+    def _build_headers(self) -> dict:
         base = {"accept": "application/json"}
         if self.workspace is not None:
             base["Workspace"] = self.workspace
         self.creds.before_request(base)
         return base
 
-    def get(self, id: str):
+    def get(self, id: int):
         endpoint_url = self.api_url + self.lookup_url + str(id) + "/"
-        headers = self.__build_headers()
+        headers = self._build_headers()
         response = requests.get(endpoint_url, headers=headers)
 
         try:
@@ -75,7 +75,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
     def list(self, filters=None):
         filters = filters or self.filter_class()
         endpoint_url = self.api_url + self.lookup_url
-        headers = self.__build_headers()
+        headers = self._build_headers()
         response = requests.get(endpoint_url, headers=headers, params=filters.cleandict())
 
         try:
@@ -94,7 +94,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
         while is_last_page is False:
             curr_filters = self.filter_class(**filters.dict())
-            curr_filters.page = str(page)
+            curr_filters.page = page
             response = self.list(curr_filters)
             results.extend(response.results)
             is_last_page = response.next is None
@@ -123,7 +123,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             return response
 
         # Request other pages
-        all_filters = [{**filters.dict(), "page": str(page)} for page in range(2, n_pages + 1)]
+        all_filters = [{**filters.dict(), "page": page} for page in range(2, n_pages + 1)]
         all_filters = [self.filter_class(**filter) for filter in all_filters]
         with ThreadPoolExecutor(max_workers=self.nthreads) as executor:
             jobs = executor.map(self.list, all_filters)
