@@ -2,12 +2,19 @@
 # top-most EditorConfig file
 root = true
 
-# Config for all files
 [*]
-insert_final_newline = true
-
-# Config for Python (uncomment what you need)
-[*.py]
 indent_style = space
 indent_size = 4
+charset = utf-8
 trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = lf
+
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
+
+[*.{yml,yaml,json}]
+indent_size = 2
