@@ -53,7 +53,7 @@ from cmsdials import Dials
 from cmsdials.filters import LumisectionHistogram1DFilters
 
 creds = Credentials.from_creds_file()
-dials = Dials(creds, nthreads=2)
+dials = Dials(creds)
 
 # Getting h1d data
 data = dials.h1d.list_all(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
@@ -64,7 +64,7 @@ data = dials.h1d.list_all(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/P
 Users are automatically routed to a workspace based on e-groups, but it is possible to overwrite this configuration and inspect data from others workspaces:
 
 ```python
-dials = Dials(creds, workspace="jetmet", nthreads=2)
+dials = Dials(creds, workspace="jetmet")
 ```
 
 ## Available endpoints
@@ -124,10 +124,9 @@ from cmsdials.filters import (
     RunFilters
 )
 
+dials.file_index.list(FileIndexFilters(dataset__regex="2024B"))
 
-dials.file_index.list(FileIndexFilters(page=10))
-
-dials.h1d.list(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2", page=5))
+dials.h1d.list(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"))
 
 dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), max_pages=5)
 
@@ -159,7 +158,7 @@ DEV_CACHE_DIR = ".cache-dev"
 
 auth = AuthClient(base_url=DEV_URL)
 creds = Credentials.from_creds_file(cache_dir=DEV_CACHE_DIR, client=auth)  # Make sure to specify the auth client with overwritten values, using another cache_dir is recommended
-dials = Dials(creds, nthreads=2, base_url=DEV_URL)
+dials = Dials(creds, base_url=DEV_URL)
 
 dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="EEOT digi occupancy EE +", entries__gte=100, run_number__gte=360392, run_number__lte=365000), max_pages=5)
 ```

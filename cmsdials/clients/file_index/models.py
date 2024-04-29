@@ -19,14 +19,13 @@ class FileIndex(BaseModel):
 
 
 class PaginatedFileIndexList(BaseModel):
-    count: int
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: List[FileIndex]
 
 
 class FileIndexFilters(OBaseModel):
-    page: Optional[int] = None
+    next_token: Optional[str] = None
     dataset_id: Optional[int] = None
     logical_file_name: Optional[str] = None
     logical_file_name__regex: Optional[str] = None

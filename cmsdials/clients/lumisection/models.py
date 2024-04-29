@@ -16,14 +16,13 @@ class Lumisection(BaseModel):
 
 
 class PaginatedLumisectionList(BaseModel):
-    count: int
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: list[Lumisection]
 
 
 class LumisectionFilters(OBaseModel):
-    page: Optional[int] = None
+    next_token: Optional[str] = None
     dataset_id: Optional[int] = None
     run_number: Optional[int] = None
     run_number__lte: Optional[int] = None

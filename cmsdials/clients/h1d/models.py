@@ -23,14 +23,13 @@ class LumisectionHistogram1D(BaseModel):
 
 
 class PaginatedLumisectionHistogram1DList(BaseModel):
-    count: int
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: List[LumisectionHistogram1D]
 
 
 class LumisectionHistogram1DFilters(OBaseModel):
-    page: Optional[int] = None
+    next_token: Optional[str] = None
     dataset_id: Optional[int] = None
     file_id: Optional[int] = None
     run_number: Optional[int] = None

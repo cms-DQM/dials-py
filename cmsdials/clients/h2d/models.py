@@ -26,14 +26,13 @@ class LumisectionHistogram2D(BaseModel):
 
 
 class PaginatedLumisectionHistogram2DList(BaseModel):
-    count: int
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: list[LumisectionHistogram2D]
 
 
 class LumisectionHistogram2DFilters(OBaseModel):
-    page: Optional[int] = None
+    next_token: Optional[str] = None
     dataset_id: Optional[int] = None
     file_id: Optional[int] = None
     run_number: Optional[int] = None
