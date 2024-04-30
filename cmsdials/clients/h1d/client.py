@@ -6,4 +6,4 @@ class LumisectionHistogram1DClient(BaseAuthorizedAPIClient):
     data_model = LumisectionHistogram1D
     pagination_model = PaginatedLumisectionHistogram1DList
     filter_class = LumisectionHistogram1DFilters
-    lookup_url = "lumisection-h1d/"
+    lookup_url = "th1/"

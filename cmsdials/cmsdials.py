@@ -9,11 +9,9 @@ from .clients.run.client import RunClient
 
 
 class Dials:
-    def __init__(
-        self, creds: BaseCredentials, workspace: Optional[str] = None, nthreads: Optional[int] = None, *args, **kwargs
-    ) -> None:
-        self.file_index = FileIndexClient(creds, workspace, nthreads, *args, **kwargs)
-        self.h1d = LumisectionHistogram1DClient(creds, workspace, nthreads, *args, **kwargs)
-        self.h2d = LumisectionHistogram2DClient(creds, workspace, nthreads, *args, **kwargs)
-        self.lumi = LumisectionClient(creds, workspace, nthreads, *args, **kwargs)
-        self.run = RunClient(creds, workspace, nthreads, *args, **kwargs)
+    def __init__(self, creds: BaseCredentials, workspace: Optional[str] = None, *args, **kwargs) -> None:
+        self.file_index = FileIndexClient(creds, workspace, *args, **kwargs)
+        self.h1d = LumisectionHistogram1DClient(creds, workspace, *args, **kwargs)
+        self.h2d = LumisectionHistogram2DClient(creds, workspace, *args, **kwargs)
+        self.lumi = LumisectionClient(creds, workspace, *args, **kwargs)
+        self.run = RunClient(creds, workspace, *args, **kwargs)

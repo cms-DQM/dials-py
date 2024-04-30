@@ -1,6 +1,5 @@
-from concurrent.futures import ThreadPoolExecutor
-from math import ceil
 from typing import Optional
+from urllib.parse import parse_qs, urlparse
 
 import requests
 from requests.exceptions import HTTPError
@@ -42,25 +41,23 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         self,
         creds: BaseCredentials,
         workspace: Optional[str] = None,
-        nthreads: Optional[int] = None,
         *args: str,
         **kwargs: str,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.creds = creds
         self.workspace = workspace
-        self.nthreads = nthreads or 1
 
-    def __build_headers(self) -> dict:
+    def _build_headers(self) -> dict:
         base = {"accept": "application/json"}
         if self.workspace is not None:
             base["Workspace"] = self.workspace
         self.creds.before_request(base)
         return base
 
-    def get(self, id: str):
+    def get(self, id: int):
         endpoint_url = self.api_url + self.lookup_url + str(id) + "/"
-        headers = self.__build_headers()
+        headers = self._build_headers()
         response = requests.get(endpoint_url, headers=headers)
 
         try:
@@ -75,7 +72,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
     def list(self, filters=None):
         filters = filters or self.filter_class()
         endpoint_url = self.api_url + self.lookup_url
-        headers = self.__build_headers()
+        headers = self._build_headers()
         response = requests.get(endpoint_url, headers=headers, params=filters.cleandict())
 
         try:
@@ -88,54 +85,25 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         return self.pagination_model(**response)
 
     def __list_sync(self, filters, max_pages: Optional[int] = None):
-        page = 1
+        next_token = None
         results = []
         is_last_page = False
+        total_pages = 0
 
         while is_last_page is False:
             curr_filters = self.filter_class(**filters.dict())
-            curr_filters.page = str(page)
+            curr_filters.next_token = next_token
             response = self.list(curr_filters)
             results.extend(response.results)
             is_last_page = response.next is None
-            page += 1
-            if max_pages and page > max_pages:
+            next_token = parse_qs(urlparse(response.next).query).get("next_token") if response.next else None
+            total_pages += 1
+            if max_pages and total_pages > max_pages:
                 break
 
         return self.pagination_model(
-            count=response.count, next=None, previous=None, results=results  # No problem re-using last response count
+            next=None, previous=None, results=results  # No problem re-using last response count
         )
-
-    def __list_multithreaded(self, filters, max_pages: Optional[int] = None):
-        results = []
-
-        # Request the first page to compute number of pages
-        curr_filters = self.filter_class(**filters.dict())
-        curr_filters.page = "1"
-        response = self.list(curr_filters)
-        results.extend(response.results)
-        count = response.count
-        n_pages = ceil(response.count / 10)
-        n_pages = max_pages if max_pages is not None and n_pages > max_pages else n_pages
-
-        # If there isn't another page, just return current results
-        if response.next is None:
-            return response
-
-        # Request other pages
-        all_filters = [{**filters.dict(), "page": str(page)} for page in range(2, n_pages + 1)]
-        all_filters = [self.filter_class(**filter) for filter in all_filters]
-        with ThreadPoolExecutor(max_workers=self.nthreads) as executor:
-            jobs = executor.map(self.list, all_filters)
-            del all_filters
-            [results.extend(job_result.results) for job_result in jobs]
-            del jobs
-
-        return self.pagination_model(count=count, next=None, previous=None, results=results)
 
     def list_all(self, filters, max_pages: Optional[int] = None):
-        return (
-            self.__list_sync(filters, max_pages)
-            if self.nthreads is None
-            else self.__list_multithreaded(filters, max_pages)
-        )
+        return self.__list_sync(filters, max_pages)

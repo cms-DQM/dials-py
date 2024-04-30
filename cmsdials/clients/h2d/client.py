@@ -6,4 +6,4 @@ class LumisectionHistogram2DClient(BaseAuthorizedAPIClient):
     data_model = LumisectionHistogram2D
     pagination_model = PaginatedLumisectionHistogram2DList
     filter_class = LumisectionHistogram2DFilters
-    lookup_url = "lumisection-h2d/"
+    lookup_url = "th2/"

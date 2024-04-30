@@ -53,10 +53,10 @@ from cmsdials import Dials
 from cmsdials.filters import LumisectionHistogram1DFilters
 
 creds = Credentials.from_creds_file()
-dials = Dials(creds, nthreads=2)
+dials = Dials(creds)
 
 # Getting h1d data
-data = dials.h1d.list_all(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
+data = dials.h1d.list_all(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
 ```
 
 ### Workspace
@@ -64,7 +64,7 @@ data = dials.h1d.list_all(LumisectionHistogram1DFilters(title="PixelPhase1/Track
 Users are automatically routed to a workspace based on e-groups, but it is possible to overwrite this configuration and inspect data from others workspaces:
 
 ```python
-dials = Dials(creds, workspace="jetmet", nthreads=2)
+dials = Dials(creds, workspace="jetmet")
 ```
 
 ## Available endpoints
@@ -74,11 +74,11 @@ This package interacts with DIALS api endpoints using underlying classes in `Dia
 ### Retrieving a specific object using `get`
 
 ```python
-dials.file_index.get(id=1)
+dials.file_index.get(id=3386119397)
 dials.h1d.get(id=1)
 dials.h2d.get(id=1)
-dials.lumi.get(id=1)
-dials.run.get(id=1)
+dials.lumi.get(dataset_id=14677060, run_number=367094, ls_number=1)
+dials.run.get(dataset_id=14677060, run_number=367094)
 ```
 
 ### Retrieving a list of objects per page using `list`
@@ -94,6 +94,8 @@ dials.run.list()
 ```
 
 ### Retrieving all available pages of a list of objects using `list_all`
+
+Note: Keep in mind that running `list_all` without any filter can take too much time, since you will be retrieving all rows in the database.
 
 ```python
 dials.file_index.list_all()
@@ -122,16 +124,15 @@ from cmsdials.filters import (
     RunFilters
 )
 
+dials.file_index.list(FileIndexFilters(dataset__regex="2024B"))
 
-dials.file_index.list(FileIndexFilters(page="10"))
+dials.h1d.list(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"))
 
-dials.h1d.list(LumisectionHistogram1DFilters(title="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2", page="15"))
-
-dials.h2d.list_all(LumisectionHistogram2DFilters(title_contains="EEOT digi occupancy EE +", min_entries=100, min_run_number=360392, max_run_number=365000), max_pages=5)
+dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), max_pages=5)
 
 dials.lumi.list_all(LumisectionFilters(run_number=360392), max_pages=5)
 
-dials.run.list_all(RunFilters(min_run_number=360392, max_run_number=365000), max_pages=5)
+dials.run.list_all(RunFilters(run_number__gte=360392, run_number__lte=365000), max_pages=5)
 ```
 
 ### Dials MEs
@@ -157,7 +158,7 @@ DEV_CACHE_DIR = ".cache-dev"
 
 auth = AuthClient(base_url=DEV_URL)
 creds = Credentials.from_creds_file(cache_dir=DEV_CACHE_DIR, client=auth)  # Make sure to specify the auth client with overwritten values, using another cache_dir is recommended
-dials = Dials(creds, nthreads=2, base_url=DEV_URL)
+dials = Dials(creds, base_url=DEV_URL)
 
-dials.h2d.list_all(LumisectionHistogram2DFilters(title_contains="EEOT digi occupancy EE +", min_entries=100, min_run_number=360392, max_run_number=365000), max_pages=5)
+dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="EEOT digi occupancy EE +", entries__gte=100, run_number__gte=360392, run_number__lte=365000), max_pages=5)
 ```
