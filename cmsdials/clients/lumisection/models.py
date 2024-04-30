@@ -10,7 +10,6 @@ class Lumisection(BaseModel):
     dataset: str = Field(..., max_length=255)
     run_number: int
     ls_number: int
-    ls_id: int
     th1_count: int
     th2_count: int
 

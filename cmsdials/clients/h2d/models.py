@@ -14,7 +14,6 @@ class LumisectionHistogram2D(BaseModel):
     run_number: int
     ls_number: int
     me_id: int
-    ls_id: int
     x_min: float
     x_max: float
     x_bin: float
@@ -42,7 +41,6 @@ class LumisectionHistogram2DFilters(OBaseModel):
     ls_numbet__lte: Optional[int] = None
     ls_number__gte: Optional[int] = None
     me_id: Optional[int] = None
-    ls_id: Optional[int] = None
     entries__gte: Optional[int] = None
     dataset: Optional[str] = None
     dataset__regex: Optional[str] = None
