@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 
-from ...utils.base_model import OBaseModel
+from ...utils.base_model import OBaseModel, PaginatedBaseModel
 
 
 class Lumisection(BaseModel):
@@ -14,7 +14,7 @@ class Lumisection(BaseModel):
     th2_count: int
 
 
-class PaginatedLumisectionList(BaseModel):
+class PaginatedLumisectionList(PaginatedBaseModel):
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: list[Lumisection]

@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 
-from ...utils.base_model import OBaseModel
+from ...utils.base_model import OBaseModel, PaginatedBaseModel
 
 
 class LumisectionHistogram1D(BaseModel):
@@ -21,7 +21,7 @@ class LumisectionHistogram1D(BaseModel):
     data: list[float]
 
 
-class PaginatedLumisectionHistogram1DList(BaseModel):
+class PaginatedLumisectionHistogram1DList(PaginatedBaseModel):
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: list[LumisectionHistogram1D]
