@@ -1,4 +1,4 @@
-from typing import Mapping
+from collections.abc import Mapping
 
 from ._base import BaseCredentials
 

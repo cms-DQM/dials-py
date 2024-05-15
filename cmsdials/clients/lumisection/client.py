@@ -15,7 +15,7 @@ class LumisectionClient(BaseAuthorizedAPIClient):
     def get(self, dataset_id: int, run_number: int, ls_number: int):
         endpoint_url = f"{self.api_url}{self.lookup_url}{dataset_id}/{run_number}/{ls_number}/"
         headers = self._build_headers()
-        response = requests.get(endpoint_url, headers=headers)
+        response = requests.get(endpoint_url, headers=headers, timeout=self.default_timeout)
 
         try:
             response.raise_for_status()

@@ -1,14 +1,16 @@
 import json
 import os
 import os.path
+from collections.abc import Mapping
 from datetime import datetime
-from typing import Mapping, Optional
+from typing import Optional
 
 from ..utils._json import TokenDecoder, TokenEncoder
 from ..utils.logger import logger
 from ._base import BaseCredentials, TokenState
 from .client import AuthClient
 from .models import Token
+
 
 DEFAULT_CACHE_DIR = ".cache"
 DEFAULT_CACHE_FILENAME = "creds"
@@ -103,7 +105,7 @@ class Credentials(BaseCredentials):
         client = client or AuthClient()
         fpath = Credentials._handle_creds_filepath(cache_dir)
         try:
-            with open(fpath, "r") as filebuffer:
+            with open(fpath) as filebuffer:
                 fcontents = json.load(filebuffer, cls=TokenDecoder)
             token = Token(**fcontents)
         except FileNotFoundError:

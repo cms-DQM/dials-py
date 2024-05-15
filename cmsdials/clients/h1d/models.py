@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 
@@ -24,7 +24,7 @@ class LumisectionHistogram1D(BaseModel):
 class PaginatedLumisectionHistogram1DList(BaseModel):
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
-    results: List[LumisectionHistogram1D]
+    results: list[LumisectionHistogram1D]
 
 
 class LumisectionHistogram1DFilters(OBaseModel):
