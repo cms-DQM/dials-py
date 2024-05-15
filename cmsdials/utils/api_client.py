@@ -1,3 +1,4 @@
+from importlib import util as importlib_util
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
@@ -6,6 +7,14 @@ from requests.exceptions import HTTPError
 
 from ..auth._base import BaseCredentials
 from ..utils.logger import logger
+
+
+if importlib_util.find_spec("tqdm"):
+    from tqdm import tqdm
+
+    TQDM_INSTALLED = True
+else:
+    TQDM_INSTALLED = False
 
 
 class BaseAPIClient:
@@ -96,6 +105,9 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         is_last_page = False
         total_pages = 0
 
+        if TQDM_INSTALLED:
+            progress = tqdm(desc="Progress", total=1)
+
         while is_last_page is False:
             curr_filters = self.filter_class(**filters.dict())
             curr_filters.next_token = next_token
@@ -104,8 +116,18 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             is_last_page = response.next is None
             next_token = parse_qs(urlparse(response.next).query).get("next_token") if response.next else None
             total_pages += 1
-            if max_pages and total_pages > max_pages:
+            max_pages_reached = max_pages and total_pages >= max_pages
+            if TQDM_INSTALLED:
+                if is_last_page or max_pages_reached:
+                    progress.update()
+                else:
+                    progress.total = total_pages + 1
+                    progress.update(1)
+            if max_pages_reached:
                 break
+
+        if TQDM_INSTALLED:
+            progress.close()
 
         return self.pagination_model(
             next=None,
