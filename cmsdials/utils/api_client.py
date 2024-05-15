@@ -1,4 +1,3 @@
-from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
 import requests
@@ -13,9 +12,7 @@ class BaseAPIClient:
     PRODUCTION_API_ROUTE = "api/"
     PRODUCTION_API_VERSION = "v1/"
 
-    def __init__(
-        self, base_url: Optional[str] = None, route: Optional[str] = None, version: Optional[str] = None
-    ) -> None:
+    def __init__(self, base_url: str | None = None, route: str | None = None, version: str | None = None) -> None:
         self.base_url = self.__endswithslash(base_url or self.PRODUCTION_BASE_URL)
         self.route = self.__endswithslash(route or self.PRODUCTION_API_ROUTE)
         self.version = self.__endswithslash(version or self.PRODUCTION_API_VERSION)
@@ -36,11 +33,12 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
     pagination_model = None
     filter_class = None
     lookup_url = None
+    default_timeout = 30  # seconds
 
     def __init__(
         self,
         creds: BaseCredentials,
-        workspace: Optional[str] = None,
+        workspace: str | None = None,
         *args: str,
         **kwargs: str,
     ) -> None:
@@ -55,10 +53,10 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         self.creds.before_request(base)
         return base
 
-    def get(self, id: int):
+    def get(self, id: int):  # noqa: A002
         endpoint_url = self.api_url + self.lookup_url + str(id) + "/"
         headers = self._build_headers()
-        response = requests.get(endpoint_url, headers=headers)
+        response = requests.get(endpoint_url, headers=headers, timeout=self.default_timeout)
 
         try:
             response.raise_for_status()
@@ -73,7 +71,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         filters = filters or self.filter_class()
         endpoint_url = self.api_url + self.lookup_url
         headers = self._build_headers()
-        response = requests.get(endpoint_url, headers=headers, params=filters.cleandict())
+        response = requests.get(endpoint_url, headers=headers, params=filters.cleandict(), timeout=self.default_timeout)
 
         try:
             response.raise_for_status()
@@ -82,9 +80,14 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             raise err
 
         response = response.json()
-        return self.pagination_model(**response)
+        if self.pagination_model:
+            return self.pagination_model(**response)
+        elif isinstance(response, list):
+            return [self.data_model(**res) for res in response]
 
-    def __list_sync(self, filters, max_pages: Optional[int] = None):
+        raise ValueError("pagination model is None and response is not a list.")
+
+    def __list_sync(self, filters, max_pages: int | None = None):
         next_token = None
         results = []
         is_last_page = False
@@ -102,8 +105,12 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
                 break
 
         return self.pagination_model(
-            next=None, previous=None, results=results  # No problem re-using last response count
+            next=None,
+            previous=None,
+            results=results,  # No problem re-using last response count
         )
 
-    def list_all(self, filters, max_pages: Optional[int] = None):
+    def list_all(self, filters, max_pages: int | None = None):
+        if self.pagination_model is None:
+            return self.list(filters)
         return self.__list_sync(filters, max_pages)
