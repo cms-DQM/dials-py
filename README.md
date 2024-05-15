@@ -137,10 +137,10 @@ dials.run.list_all(RunFilters(run_number__gte=360392, run_number__lte=365000), m
 
 ### Dials MEs
 
-It is possible to inspect the list of selected MEs considered in DIALS during ETL requesting the endpoint `configured-mes` trough the method:
+It is possible to inspect the list of ingested MEs in DIALS listing the endpoint `mes` trough the method:
 
 ```python
-dials.lumi.configured_mes()
+dials.mes.list()
 ```
 
 ## Usage with local DIALS
