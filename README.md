@@ -192,3 +192,13 @@ dials = Dials(creds, base_url=DEV_URL)
 
 dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="EEOT digi occupancy EE +", entries__gte=100, run_number__gte=360392, run_number__lte=365000), max_pages=5)
 ```
+
+## Running tests
+
+The repository has some tests written to make sure DIALS responses are compatible with pydantic metaclasses, you can use pytest to run all tests but you need to specify a secret key to authenticate non-interactively against DIALS api:
+
+```bash
+SECRET_KEY=... pytest tests
+```
+
+The secret key is an api client enabled secret key and can be obtained from the applications portal, any api client secret key whitelisted in DIALS can be used. The interactive authentication flow should be tested manually, an example for this can be found in [this line](/tests/integration/test_auth_client.py#L33).
