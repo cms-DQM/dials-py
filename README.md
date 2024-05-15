@@ -10,6 +10,12 @@ To install dials-py, simply
 $ pip install cmsdials
 ```
 
+It is also possible to specify the following extras, to enable optional features:
+
+```
+pandas, tqdm
+```
+
 ## Usage
 
 Before interfacing with any route you need to generate valid credentials, it is possible to authenticate trough the `device authorization flow` or using the `client secret key` of any application registered in DIALS. Note that, the device flow is an interactively authentication procedure that is possible to distinguish users in DIALS backend and the client secret flow is not interactive and is not possible to distinguish users so it should only be used for automation scripts.
@@ -142,6 +148,30 @@ It is possible to inspect the list of ingested MEs in DIALS listing the endpoint
 ```python
 dials.mes.list()
 ```
+
+### Automatically convert paginated results to pandas DataFrame
+
+You can enable this optional feature by installing the package with the `pandas` extra.
+
+All `Paginated` metaclasses contain the method `to_pandas` that will automatically transform the `results` attribute of the metaclass into a pandas dataframe, for example:
+
+```python
+data = dials.h1d.list_all(LumisectionHistogram1DFilters(me="PixelPhase1/Tracks/PXBarrel/charge_PXLayer_2"), max_pages=5)
+data.to_pandas()
+```
+
+### Indefinite progress bar when fetch multi-page result
+
+You can enable this optional feature by installing the package with the `tqdm` extra.
+
+Whenever you call a `list_all` method that fetches multiple pages a dynamic progress will be rendered to indicate duration and number of pages, for example:
+
+```python
+>>> dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), max_pages=5)
+Progress: 100%|█████████████████████████████████████| 5/5 [00:02<00:00,  1.70it/s]
+```
+
+The total attribute of the bar is dynamically updated while fetching the pages.
 
 ## Usage with local DIALS
 
