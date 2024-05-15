@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 from ...utils.base_model import OBaseModel
@@ -11,6 +13,6 @@ class MonitoringElement(BaseModel):
 
 
 class MEFilters(OBaseModel):
-    me: str | None = None
-    me__regex: str | None = None
-    dim: int | None = None
+    me: Optional[str] = None
+    me__regex: Optional[str] = None
+    dim: Optional[int] = None

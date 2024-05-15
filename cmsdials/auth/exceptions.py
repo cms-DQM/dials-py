@@ -2,5 +2,5 @@ class PendingAuthorizationError(Exception):
     pass
 
 
-class ImpossibleToRefreshToken(Exception):
+class ImpossibleToRefreshTokenError(Exception):
     pass

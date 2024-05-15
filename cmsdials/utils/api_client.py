@@ -1,3 +1,4 @@
+from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
 import requests
@@ -12,7 +13,9 @@ class BaseAPIClient:
     PRODUCTION_API_ROUTE = "api/"
     PRODUCTION_API_VERSION = "v1/"
 
-    def __init__(self, base_url: str | None = None, route: str | None = None, version: str | None = None) -> None:
+    def __init__(
+        self, base_url: Optional[str] = None, route: Optional[str] = None, version: Optional[str] = None
+    ) -> None:
         self.base_url = self.__endswithslash(base_url or self.PRODUCTION_BASE_URL)
         self.route = self.__endswithslash(route or self.PRODUCTION_API_ROUTE)
         self.version = self.__endswithslash(version or self.PRODUCTION_API_VERSION)
@@ -38,7 +41,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
     def __init__(
         self,
         creds: BaseCredentials,
-        workspace: str | None = None,
+        workspace: Optional[str] = None,
         *args: str,
         **kwargs: str,
     ) -> None:
@@ -87,7 +90,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
         raise ValueError("pagination model is None and response is not a list.")
 
-    def __list_sync(self, filters, max_pages: int | None = None):
+    def __list_sync(self, filters, max_pages: Optional[int] = None):
         next_token = None
         results = []
         is_last_page = False
@@ -110,7 +113,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             results=results,  # No problem re-using last response count
         )
 
-    def list_all(self, filters, max_pages: int | None = None):
+    def list_all(self, filters, max_pages: Optional[int] = None):
         if self.pagination_model is None:
             return self.list(filters)
         return self.__list_sync(filters, max_pages)

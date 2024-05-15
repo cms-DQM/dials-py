@@ -14,6 +14,8 @@ class AuthClient(BaseAPIClient):
     Client for DIALS auth endpoint
     """
 
+    default_timeout = 30  # seconds
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -24,6 +26,7 @@ class AuthClient(BaseAPIClient):
             headers={
                 "accept": "application/json",
             },
+            timeout=self.default_timeout,
         )
         response.raise_for_status()
         response = response.json()
@@ -38,6 +41,7 @@ class AuthClient(BaseAPIClient):
                 "Content-Type": "application/json",
             },
             json={"device_code": device_code},
+            timeout=self.default_timeout,
         )
 
         if response.status_code == 400 and "authorization_pending" in response.text:
@@ -63,6 +67,7 @@ class AuthClient(BaseAPIClient):
                 "Authorization": f"{token_type} {access_token}",
             },
             json={"refresh_token": refresh_token},
+            timeout=self.default_timeout,
         )
         response.raise_for_status()
         response = response.json()

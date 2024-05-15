@@ -1,10 +1,10 @@
 import threading
 from abc import ABC, abstractmethod
+from collections.abc import Mapping
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Mapping
 
-from .exceptions import ImpossibleToRefreshToken
+from .exceptions import ImpossibleToRefreshTokenError
 
 
 class TokenState(Enum):
@@ -116,7 +116,7 @@ class BaseCredentials(ABC):
         # If token is invalid (both token and refresh token expired): Throw error
         # User need to interactively authenticate again
         if self.token_state == TokenState.INVALID:
-            raise ImpossibleToRefreshToken
+            raise ImpossibleToRefreshTokenError
 
         # If token is stale (token is close to expire)
         # Re-use the token but launch a new thread to refresh the token

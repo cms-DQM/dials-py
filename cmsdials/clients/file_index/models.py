@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 
@@ -21,7 +21,7 @@ class FileIndex(BaseModel):
 class PaginatedFileIndexList(BaseModel):
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
-    results: List[FileIndex]
+    results: list[FileIndex]
 
 
 class FileIndexFilters(OBaseModel):
