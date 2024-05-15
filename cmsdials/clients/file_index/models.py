@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 
-from ...utils.base_model import OBaseModel
+from ...utils.base_model import OBaseModel, PaginatedBaseModel
 
 
 class FileIndex(BaseModel):
@@ -18,7 +18,7 @@ class FileIndex(BaseModel):
     err_trace: Optional[str] = Field(..., max_length=5000)
 
 
-class PaginatedFileIndexList(BaseModel):
+class PaginatedFileIndexList(PaginatedBaseModel):
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: list[FileIndex]

@@ -21,10 +21,14 @@ python = "^3.9"
 requests = "^2.31.0"
 pydantic = "<2, >=1"
 typing-extensions = "<4.6.0, >=3.6.6"
+pandas = {version = ">=1.5.3", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.2"
 ruff = "^0.4.2"
+
+[tool.poetry.extras]
+pandas = ["pandas"]
 
 [tool.ruff]
 exclude = [

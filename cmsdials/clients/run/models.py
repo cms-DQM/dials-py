@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import AnyUrl, BaseModel, Field
 
-from ...utils.base_model import OBaseModel
+from ...utils.base_model import OBaseModel, PaginatedBaseModel
 
 
 class Run(BaseModel):
@@ -12,7 +12,7 @@ class Run(BaseModel):
     ls_count: int
 
 
-class PaginatedRunList(BaseModel):
+class PaginatedRunList(PaginatedBaseModel):
     next: Optional[AnyUrl]
     previous: Optional[AnyUrl]
     results: list[Run]
