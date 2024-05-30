@@ -8,7 +8,7 @@ from .utils import setup_dials_object
 
 def test_get_file_index() -> None:
     dials = setup_dials_object()
-    data = dials.file_index.get(id=3386119397)
+    data = dials.file_index.get(dataset_id=14677060, file_id=3393809397)
     assert isinstance(data, FileIndex)
 
 

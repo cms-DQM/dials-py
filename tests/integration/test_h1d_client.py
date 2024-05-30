@@ -8,7 +8,7 @@ from .utils import setup_dials_object
 
 def test_get_h1d() -> None:
     dials = setup_dials_object()
-    data = dials.h1d.get(id=1)
+    data = dials.h1d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=1)
     assert isinstance(data, LumisectionHistogram1D)
 
 
