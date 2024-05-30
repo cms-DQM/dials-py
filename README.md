@@ -80,11 +80,11 @@ This package interacts with DIALS api endpoints using underlying classes in `Dia
 ### Retrieving a specific object using `get`
 
 ```python
-dials.file_index.get(id=3386119397)
-dials.h1d.get(id=1)
-dials.h2d.get(id=1)
-dials.lumi.get(dataset_id=14677060, run_number=367094, ls_number=1)
-dials.run.get(dataset_id=14677060, run_number=367094)
+dials.file_index.get(dataset_id=14677060, file_id=3393809397)
+dials.h1d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=1)
+dials.h1d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=96)
+dials.lumi.get(dataset_id=14677060, run_number=367112, ls_number=10)
+dials.run.get(dataset_id=14677060, run_number=367112)
 ```
 
 ### Retrieving a list of objects per page using `list`
@@ -202,3 +202,9 @@ SECRET_KEY=... pytest tests
 ```
 
 The secret key is an api client enabled secret key and can be obtained from the applications portal, any api client secret key whitelisted in DIALS can be used. The interactive authentication flow should be tested manually, an example for this can be found in [this line](/tests/integration/test_auth_client.py#L33).
+
+If testing against a local version of DIALS you need to specify the BASE_URL:
+
+```bash
+SECRET_KEY=... BASE_URl=http://localhost:8000 pytest tests
+```
