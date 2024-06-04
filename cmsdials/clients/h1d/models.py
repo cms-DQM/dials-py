@@ -6,7 +6,6 @@ from ...utils.base_model import OBaseModel, PaginatedBaseModel
 
 
 class LumisectionHistogram1D(BaseModel):
-    hist_id: int
     dataset: str = Field(..., max_length=255)
     me: str = Field(..., max_length=255)
     dataset_id: int

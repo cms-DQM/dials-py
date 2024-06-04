@@ -7,14 +7,18 @@ from requests.exceptions import HTTPError
 
 from cmsdials import Dials
 from cmsdials.auth.bearer import Credentials as BearerCredentials
+from cmsdials.auth.client import AuthClient
 from cmsdials.auth.models import Token
 from cmsdials.auth.secret_key import Credentials as SecretKeyCredentials
 from cmsdials.clients.h1d.models import LumisectionHistogram1D
 
 
+BASE_URL = os.getenv("BASE_URL")
+
+
 def __setup_dials_from_creds_and_test(creds: Union[SecretKeyCredentials, BearerCredentials]) -> None:
-    dials = Dials(creds)
-    data = dials.h1d.get(id=1)
+    dials = Dials(creds, base_url=BASE_URL)
+    data = dials.h1d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=1)
     assert isinstance(data, LumisectionHistogram1D)
 
 
@@ -51,6 +55,7 @@ def test_bearer_fail() -> None:
         expires_at=datetime.now() + timedelta(seconds=600),
         refresh_expires_at=datetime.now() + timedelta(seconds=12000),
     )
-    creds = BearerCredentials.from_authclient_token(token)
+    auth = AuthClient(base_url=BASE_URL)
+    creds = BearerCredentials.from_authclient_token(token, client=auth)
     with pytest.raises(HTTPError, match=r"403 Client Error: Forbidden for url"):
         __setup_dials_from_creds_and_test(creds)
