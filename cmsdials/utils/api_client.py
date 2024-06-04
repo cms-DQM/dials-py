@@ -10,7 +10,7 @@ from ..utils.logger import logger
 
 
 if importlib_util.find_spec("tqdm"):
-    from tqdm import tqdm
+    from tqdm.auto import tqdm
 
     TQDM_INSTALLED = True
 else:
@@ -99,13 +99,14 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
         raise ValueError("pagination model is None and response is not a list.")
 
-    def __list_sync(self, filters, max_pages: Optional[int] = None):
+    def __list_sync(self, filters, max_pages: Optional[int] = None, enable_progress: bool = False):
         next_token = None
         results = []
         is_last_page = False
         total_pages = 0
+        use_tqdm = TQDM_INSTALLED and enable_progress
 
-        if TQDM_INSTALLED:
+        if use_tqdm:
             progress = tqdm(desc="Progress", total=1)
 
         while is_last_page is False:
@@ -117,7 +118,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             next_token = parse_qs(urlparse(response.next).query).get("next_token") if response.next else None
             total_pages += 1
             max_pages_reached = max_pages and total_pages >= max_pages
-            if TQDM_INSTALLED:
+            if use_tqdm:
                 if is_last_page or max_pages_reached:
                     progress.update()
                 else:
@@ -126,7 +127,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             if max_pages_reached:
                 break
 
-        if TQDM_INSTALLED:
+        if use_tqdm:
             progress.close()
 
         return self.pagination_model(
@@ -135,7 +136,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             results=results,  # No problem re-using last response count
         )
 
-    def list_all(self, filters, max_pages: Optional[int] = None):
+    def list_all(self, filters, max_pages: Optional[int] = None, **kwargs):
         if self.pagination_model is None:
             return self.list(filters)
-        return self.__list_sync(filters, max_pages)
+        return self.__list_sync(filters, max_pages, **kwargs)
