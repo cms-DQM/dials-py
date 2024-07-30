@@ -6,6 +6,7 @@ from .clients.h1d.client import LumisectionHistogram1DClient
 from .clients.h2d.client import LumisectionHistogram2DClient
 from .clients.lumisection.client import LumisectionClient
 from .clients.mes.client import MonitoringElementClient
+from .clients.oms_proxy.client import OMSProxyClient
 from .clients.run.client import RunClient
 
 
@@ -17,3 +18,4 @@ class Dials:
         self.lumi = LumisectionClient(creds, workspace, *args, **kwargs)
         self.run = RunClient(creds, workspace, *args, **kwargs)
         self.mes = MonitoringElementClient(creds, workspace, *args, **kwargs)
+        self.oms = OMSProxyClient(creds, *args, **kwargs)
