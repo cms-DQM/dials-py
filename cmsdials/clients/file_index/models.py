@@ -14,7 +14,7 @@ class FileIndex(BaseModel):
     creation_date: datetime
     last_modification_date: datetime
     logical_file_name: str
-    status: str = Field(..., max_length=15)
+    status: str = Field(..., max_length=255)
     err_trace: Optional[str] = Field(..., max_length=5000)
 
 
