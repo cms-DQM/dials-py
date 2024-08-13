@@ -94,11 +94,17 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         response = response.json()
         return self.data_model(**response)
 
-    def list(self, filters=None):
+    def list(self, filters=None, retries=DEFAULT_RETRIES):
         filters = filters or self.filter_class()
         endpoint_url = self.api_url + self.lookup_url
         headers = self._build_headers()
-        response = requests.get(endpoint_url, headers=headers, params=filters.cleandict(), timeout=self.default_timeout)
+        response = self._requests_get_retriable(
+            endpoint_url,
+            headers=headers,
+            params=filters.cleandict(),
+            timeout=self.default_timeout,
+            retries=retries,
+        )
 
         try:
             response.raise_for_status()
@@ -114,7 +120,13 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
         raise ValueError("pagination model is None and response is not a list.")
 
-    def __list_sync(self, filters, max_pages: Optional[int] = None, enable_progress: bool = False):
+    def __list_sync(
+        self,
+        filters,
+        max_pages: Optional[int] = None,
+        enable_progress: bool = False,
+        retries=DEFAULT_RETRIES,
+    ):
         next_token = None
         results = []
         is_last_page = False
@@ -127,7 +139,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         while is_last_page is False:
             curr_filters = self.filter_class(**filters.dict())
             curr_filters.next_token = next_token
-            response = self.list(curr_filters)
+            response = self.list(curr_filters, retries=retries)
             results.extend(response.results)
             is_last_page = response.next is None
             next_token = parse_qs(urlparse(response.next).query).get("next_token") if response.next else None
