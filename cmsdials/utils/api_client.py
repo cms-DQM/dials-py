@@ -3,6 +3,8 @@ from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
 import requests
+from requests import Response, Session
+from requests.adapters import DEFAULT_RETRIES, HTTPAdapter
 from requests.exceptions import HTTPError
 
 from ..auth._base import BaseCredentials
@@ -34,6 +36,19 @@ class BaseAPIClient:
         if value.endswith("/") is False:
             return value + "/"
         return value
+
+    @classmethod
+    def _requests_get_retriable(cls, *args, retries=DEFAULT_RETRIES, **kwargs) -> Response:
+        """
+        requests.get() with an additional `retries` parameter.
+
+        Specify retries=<number of attempts - 1> for simple use cases.
+        For advanced usage, see https://docs.python-requests.org/en/latest/user/advanced/
+        """
+        with Session() as s:
+            s.mount(cls.PRODUCTION_BASE_URL, HTTPAdapter(max_retries=retries))
+            ret = s.get(*args, **kwargs)
+        return ret
 
     @property
     def api_url(self):
