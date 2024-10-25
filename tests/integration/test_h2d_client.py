@@ -9,7 +9,7 @@ from .utils import setup_dials_object
 
 def test_get_h2d() -> None:
     dials = setup_dials_object()
-    data = dials.h2d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=133)
+    data = dials.h2d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=100)
     assert isinstance(data, LumisectionHistogram2D)
 
 
