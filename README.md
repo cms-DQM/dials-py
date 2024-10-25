@@ -173,6 +173,17 @@ Progress: 100%|█████████████████████�
 
 The total attribute of the bar is dynamically updated while fetching the pages.
 
+## Retrying
+
+In case of an unstable connection, DNS failures or service overload it is possible to configure any `list` and  `list_all` to retry the underlying requests using native `urllib3` retry class, for example:
+
+```python
+from urllib3.util import Retry
+
+data = dials.h1d.list(retries=Retry(total=3, backoff_factor=0.1))
+data = dials.h1d.list_all(LumisectionHistogram1DFilters(), max_pages=5, retries=Retry(total=5, backoff_factor=0.1))
+```
+
 ## Usage with local DIALS
 
 All classes that interface the DIALS service inherits the class `BaseAPIClient` which propagate the `base_url`, `route` and `version` attributes with production values. In order to use dials-py with a local version of DIALS it is possible to overwrite those attributes when instantiating the `AuthClient` and the `Dials` client, for example:
