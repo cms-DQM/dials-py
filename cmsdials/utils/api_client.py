@@ -1,5 +1,5 @@
 from importlib import util as importlib_util
-from traceback import format_exception_only
+from traceback import format_exc
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
 from warnings import warn
@@ -165,7 +165,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
                 if not keep_failed:
                     raise e
                 warn(
-                    "HTTP request failed, returning partial results. Exception: " + "\n".join(format_exception_only(e)),
+                    "HTTP request failed, returning partial results. Exception: " + format_exc(),
                     RuntimeWarning,
                     stacklevel=2,
                 )
