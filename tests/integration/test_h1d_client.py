@@ -1,4 +1,5 @@
 import pandas as pd
+from urllib3.util import Retry
 
 from cmsdials.clients.h1d.models import LumisectionHistogram1D, PaginatedLumisectionHistogram1DList
 from cmsdials.filters import LumisectionHistogram1DFilters
@@ -14,13 +15,13 @@ def test_get_h1d() -> None:
 
 def test_list_h1d() -> None:
     dials = setup_dials_object()
-    data = dials.h1d.list()
+    data = dials.h1d.list(retries=Retry(total=3, backoff_factor=0.1))
     assert isinstance(data, PaginatedLumisectionHistogram1DList)
     assert isinstance(data.to_pandas(), pd.DataFrame)
 
 
 def test_list_all_h1d() -> None:
     dials = setup_dials_object()
-    data = dials.h1d.list_all(LumisectionHistogram1DFilters(), max_pages=5)
+    data = dials.h1d.list_all(LumisectionHistogram1DFilters(), max_pages=5, retries=Retry(total=5, backoff_factor=0.1))
     assert isinstance(data, PaginatedLumisectionHistogram1DList)
     assert isinstance(data.to_pandas(), pd.DataFrame)

@@ -23,6 +23,7 @@ pydantic = "<2, >=1"
 typing-extensions = "<4.6.0, >=3.6.6"
 pandas = {version = ">=1.5.3", optional = true}
 tqdm = {version = ">=4.66.1", optional = true}
+urllib3 = "^2.2.3"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.2"

@@ -5,6 +5,8 @@ from urllib.parse import parse_qs, urlparse
 from warnings import warn
 
 import requests
+from requests import Response, Session
+from requests.adapters import DEFAULT_RETRIES, HTTPAdapter
 from requests.exceptions import HTTPError
 
 from ..auth._base import BaseCredentials
@@ -36,6 +38,19 @@ class BaseAPIClient:
         if value.endswith("/") is False:
             return value + "/"
         return value
+
+    @classmethod
+    def _requests_get_retriable(cls, *args, retries=DEFAULT_RETRIES, **kwargs) -> Response:
+        """
+        requests.get() with an additional `retries` parameter.
+
+        Specify retries=<number of attempts - 1> for simple use cases.
+        For advanced usage, see https://docs.python-requests.org/en/latest/user/advanced/
+        """
+        with Session() as s:
+            s.mount(cls.PRODUCTION_BASE_URL, HTTPAdapter(max_retries=retries))
+            ret = s.get(*args, **kwargs)
+        return ret
 
     @property
     def api_url(self):
@@ -81,11 +96,17 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         response = response.json()
         return self.data_model(**response)
 
-    def list(self, filters=None):
+    def list(self, filters=None, retries=DEFAULT_RETRIES):
         filters = filters or self.filter_class()
         endpoint_url = self.api_url + self.lookup_url
         headers = self._build_headers()
-        response = requests.get(endpoint_url, headers=headers, params=filters.cleandict(), timeout=self.default_timeout)
+        response = self._requests_get_retriable(
+            endpoint_url,
+            headers=headers,
+            params=filters.cleandict(),
+            timeout=self.default_timeout,
+            retries=retries,
+        )
 
         try:
             response.raise_for_status()
@@ -106,6 +127,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         filters,
         max_pages: Optional[int] = None,
         enable_progress: bool = False,
+        retries=DEFAULT_RETRIES,
         keep_failed: bool = False,
         resume_from=None,
     ):
@@ -135,8 +157,8 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             curr_filters = self.filter_class(**filters.dict())
             curr_filters.next_token = next_token
             try:
-                response = self.list(curr_filters)
-            except Exception as e:
+                response = self.list(curr_filters, retries=retries)
+            except Exception as e:  # noqa: BLE001
                 if use_tqdm:
                     progress.close()
 
