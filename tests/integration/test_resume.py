@@ -2,11 +2,11 @@ from urllib3.util import Retry
 
 from cmsdials.filters import LumisectionHistogram2DFilters
 
-from .utils import setup_dials_object
+from .utils import DEFAULT_TEST_WORKSPACE, setup_dials_object
 
 
 def test_resume() -> None:
-    dials = setup_dials_object(workspace="tracker")
+    dials = setup_dials_object(workspace=DEFAULT_TEST_WORKSPACE)
     data = dials.h2d.list_all(
         LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100),
         max_pages=10,
@@ -25,7 +25,7 @@ def test_resume() -> None:
 
 
 def test_resume_with_retries() -> None:
-    dials = setup_dials_object(workspace="tracker")
+    dials = setup_dials_object(workspace=DEFAULT_TEST_WORKSPACE)
     data = dials.h2d.list_all(
         LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100),
         max_pages=10,

@@ -1,10 +1,10 @@
 from cmsdials.filters import OMSFilter, OMSPage
 
-from .utils import setup_dials_object
+from .utils import DEFAULT_TEST_WORKSPACE, setup_dials_object
 
 
 def test_query_runs() -> None:
-    dials = setup_dials_object()
+    dials = setup_dials_object(workspace=DEFAULT_TEST_WORKSPACE)
     data = dials.oms.query(
         endpoint="runs", filters=[OMSFilter(attribute_name="run_number", value=382921, operator="EQ")]
     )
@@ -13,7 +13,7 @@ def test_query_runs() -> None:
 
 
 def test_query_lumisections() -> None:
-    dials = setup_dials_object()
+    dials = setup_dials_object(workspace=DEFAULT_TEST_WORKSPACE)
     data = dials.oms.query(
         endpoint="lumisections",
         filters=[OMSFilter(attribute_name="run_number", value=382921, operator="EQ")],
@@ -24,7 +24,7 @@ def test_query_lumisections() -> None:
 
 
 def test_query_datasetrates() -> None:
-    dials = setup_dials_object()
+    dials = setup_dials_object(workspace=DEFAULT_TEST_WORKSPACE)
     data = dials.oms.query(
         endpoint="datasetrates",
         filters=[
