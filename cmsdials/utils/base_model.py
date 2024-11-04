@@ -1,4 +1,5 @@
 from importlib import util as importlib_util
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -17,6 +18,9 @@ class OBaseModel(BaseModel):
 
 
 class PaginatedBaseModel(BaseModel):
+    exc_type: Optional[str] = None
+    exc_formatted: Optional[str] = None
+
     def to_pandas(self):
         if PANDAS_NOT_INSTALLED:
             raise RuntimeError(

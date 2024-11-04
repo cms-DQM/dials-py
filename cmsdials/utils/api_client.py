@@ -1,6 +1,8 @@
 from importlib import util as importlib_util
+from traceback import format_exc
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
+from warnings import warn
 
 import requests
 from requests import Response, Session
@@ -126,10 +128,24 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         max_pages: Optional[int] = None,
         enable_progress: bool = False,
         retries=DEFAULT_RETRIES,
+        keep_failed: bool = False,
+        resume_from=None,
     ):
-        next_token = None
+        next_string: Optional[str] = None
         results = []
         is_last_page = False
+
+        if resume_from is not None:
+            results = resume_from.results
+            next_string = resume_from.next
+            if next_string is None and len(results):
+                warn(
+                    "resume_from.next is None while resume_from.result is not empty, doing nothing.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                is_last_page = True
+
         total_pages = 0
         use_tqdm = TQDM_INSTALLED and enable_progress
 
@@ -137,12 +153,34 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             progress = tqdm(desc="Progress", total=1)
 
         while is_last_page is False:
+            next_token = parse_qs(urlparse(next_string).query).get("next_token") if next_string else None
             curr_filters = self.filter_class(**filters.dict())
             curr_filters.next_token = next_token
-            response = self.list(curr_filters, retries=retries)
+            try:
+                response = self.list(curr_filters, retries=retries)
+            except Exception as e:  # noqa: BLE001
+                if use_tqdm:
+                    progress.close()
+
+                if not keep_failed:
+                    raise e
+
+                exc_formatted = format_exc()
+                warn(
+                    "HTTP request failed, returning partial results. Exception: " + exc_formatted,
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                return self.pagination_model(
+                    next=next_string,
+                    previous=None,
+                    results=results,
+                    exc_type=e.__class__.__name__,
+                    exc_formatted=exc_formatted,
+                )
             results.extend(response.results)
-            is_last_page = response.next is None
-            next_token = parse_qs(urlparse(response.next).query).get("next_token") if response.next else None
+            next_string = response.next
+            is_last_page = next_string is None
             total_pages += 1
             max_pages_reached = max_pages and total_pages >= max_pages
             if use_tqdm:
@@ -158,7 +196,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             progress.close()
 
         return self.pagination_model(
-            next=None,
+            next=next_string,
             previous=None,
             results=results,  # No problem re-using last response count
         )
