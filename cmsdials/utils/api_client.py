@@ -203,5 +203,5 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
     def list_all(self, filters, max_pages: Optional[int] = None, **kwargs):
         if self.pagination_model is None:
-            return self.list(filters)
+            return self.list(filters, retries=kwargs.get("retries", DEFAULT_RETRIES))
         return self.__list_sync(filters, max_pages, **kwargs)
