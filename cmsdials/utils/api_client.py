@@ -4,7 +4,6 @@ from typing import Optional
 from urllib.parse import parse_qs, urlparse
 from warnings import warn
 
-import requests
 from requests import Response, Session
 from requests.adapters import DEFAULT_RETRIES, HTTPAdapter
 from requests.exceptions import HTTPError
@@ -82,10 +81,15 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         self.creds.before_request(base)
         return base
 
-    def get(self, id: int):  # noqa: A002
-        endpoint_url = self.api_url + self.lookup_url + str(id) + "/"
+    def get(self, edp: str, retries=DEFAULT_RETRIES):  # noqa: A002
+        endpoint_url = self.api_url + self.lookup_url + edp
         headers = self._build_headers()
-        response = requests.get(endpoint_url, headers=headers, timeout=self.default_timeout)
+        response = self._requests_get_retriable(
+            endpoint_url,
+            headers=headers,
+            timeout=self.default_timeout,
+            retries=retries,
+        )
 
         try:
             response.raise_for_status()
