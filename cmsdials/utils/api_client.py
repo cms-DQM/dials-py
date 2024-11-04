@@ -164,6 +164,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
                 if not keep_failed:
                     raise e
+
                 exc_formatted = format_exc()
                 warn(
                     "HTTP request failed, returning partial results. Exception: " + exc_formatted,
@@ -195,7 +196,7 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             progress.close()
 
         return self.pagination_model(
-            next=None,
+            next=next_string,
             previous=None,
             results=results,  # No problem re-using last response count
         )
