@@ -164,8 +164,9 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
 
                 if not keep_failed:
                     raise e
+                exc_formatted = format_exc()
                 warn(
-                    "HTTP request failed, returning partial results. Exception: " + format_exc(),
+                    "HTTP request failed, returning partial results. Exception: " + exc_formatted,
                     RuntimeWarning,
                     stacklevel=2,
                 )
@@ -173,7 +174,8 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
                     next=next_string,
                     previous=None,
                     results=results,
-                    exception=e,
+                    exc_type=e.__class__.__name__,
+                    exc_formatted=exc_formatted,
                 )
             results.extend(response.results)
             next_string = response.next

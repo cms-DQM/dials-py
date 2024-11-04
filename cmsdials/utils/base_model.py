@@ -1,7 +1,7 @@
 from importlib import util as importlib_util
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 if importlib_util.find_spec("pandas"):
@@ -18,10 +18,8 @@ class OBaseModel(BaseModel):
 
 
 class PaginatedBaseModel(BaseModel):
-    class Config:
-        arbitrary_types_allowed = True
-
-    exception: Optional[BaseException] = Field(default=None)
+    exc_type: Optional[str] = None
+    exc_formatted: Optional[str] = None
 
     def to_pandas(self):
         if PANDAS_NOT_INSTALLED:
