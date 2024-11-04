@@ -184,6 +184,41 @@ data = dials.h1d.list(retries=Retry(total=3, backoff_factor=0.1))
 data = dials.h1d.list_all(LumisectionHistogram1DFilters(), max_pages=5, retries=Retry(total=5, backoff_factor=0.1))
 ```
 
+## Resuming
+
+When listing and endpoint for a long time, you may loose connection or the server can potentially return an error. By specifying `keep_failed` and using `resume_from` you can resume from an older response object, for example:
+
+```python
+from cmsdials.auth.client import AuthClient
+from cmsdials.auth.bearer import Credentials
+from cmsdials import Dials
+from cmsdials.filters import LumisectionHistogram2DFilters
+
+auth = AuthClient()
+creds = Credentials.from_creds_file()
+dials = Dials(creds, workspace="tracker")
+
+data = dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), keep_failed=True)  # Code may broke inside this routine
+print(len(data.results))  # 100
+print(data.exc_type)
+print(data.exc_formatted)
+
+# After failing, run this again
+data = dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), keep_failed=True, resume_from=data)  # Resume from failed object
+print(len(data.results))  # 200
+```
+
+You may find it useful to resume from a partial response, i.e,
+
+```python
+data = dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), max_pages=10, keep_failed=True)  # Code may not break, however will fetch only 100 elements
+print(len(data.results))  # 100
+
+# After fetching first 100, fetch next 100
+data = dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), max_pages=10, keep_failed=True, resume_from=data)  # Resume from partial object
+print(len(data.results))  # 200
+```
+
 ## Usage with local DIALS
 
 All classes that interface the DIALS service inherits the class `BaseAPIClient` which propagate the `base_url`, `route` and `version` attributes with production values. In order to use dials-py with a local version of DIALS it is possible to overwrite those attributes when instantiating the `AuthClient` and the `Dials` client, for example:
