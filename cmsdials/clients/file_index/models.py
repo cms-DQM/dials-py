@@ -26,6 +26,7 @@ class PaginatedFileIndexList(PaginatedBaseModel):
 
 class FileIndexFilters(OBaseModel):
     next_token: Optional[str] = None
+    page_size: Optional[int] = None
     dataset_id: Optional[int] = None
     logical_file_name: Optional[str] = None
     logical_file_name__regex: Optional[str] = None
