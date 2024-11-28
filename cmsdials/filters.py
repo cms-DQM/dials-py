@@ -1,3 +1,4 @@
+from .clients.dataset_index.models import DatasetIndexFilters
 from .clients.file_index.models import FileIndexFilters
 from .clients.h1d.models import LumisectionHistogram1DFilters
 from .clients.h2d.models import LumisectionHistogram2DFilters
@@ -10,6 +11,7 @@ from .clients.run.models import RunFilters
 
 
 __all__ = [
+    "DatasetIndexFilters",
     "FileIndexFilters",
     "LumisectionHistogram1DFilters",
     "LumisectionHistogram2DFilters",
