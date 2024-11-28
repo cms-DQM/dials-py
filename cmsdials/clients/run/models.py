@@ -20,6 +20,7 @@ class PaginatedRunList(PaginatedBaseModel):
 
 class RunFilters(OBaseModel):
     next_token: Optional[str] = None
+    page_size: Optional[int] = None
     dataset_id: Optional[int] = None
     run_number: Optional[int] = None
     run_number__lte: Optional[int] = None

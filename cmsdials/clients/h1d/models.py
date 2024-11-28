@@ -28,6 +28,7 @@ class PaginatedLumisectionHistogram1DList(PaginatedBaseModel):
 
 class LumisectionHistogram1DFilters(OBaseModel):
     next_token: Optional[str] = None
+    page_size: Optional[int] = None
     dataset_id: Optional[int] = None
     file_id: Optional[int] = None
     run_number: Optional[int] = None
