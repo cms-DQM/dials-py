@@ -1,6 +1,7 @@
 from typing import Optional
 
 from .auth._base import BaseCredentials
+from .clients.dataset_index.client import DatasetIndexClient
 from .clients.file_index.client import FileIndexClient
 from .clients.h1d.client import LumisectionHistogram1DClient
 from .clients.h2d.client import LumisectionHistogram2DClient
@@ -14,6 +15,7 @@ from .clients.run.client import RunClient
 
 class Dials:
     def __init__(self, creds: BaseCredentials, workspace: Optional[str] = None, *args, **kwargs) -> None:
+        self.dataset_index = DatasetIndexClient(creds, workspace, *args, **kwargs)
         self.file_index = FileIndexClient(creds, workspace, *args, **kwargs)
         self.h1d = LumisectionHistogram1DClient(creds, workspace, *args, **kwargs)
         self.h2d = LumisectionHistogram2DClient(creds, workspace, *args, **kwargs)
