@@ -81,12 +81,13 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
         self.creds.before_request(base)
         return base
 
-    def get(self, edp: str, retries=DEFAULT_RETRIES):  # noqa: A002
+    def get(self, edp: str, retries=DEFAULT_RETRIES, params: Optional[dict] = None, return_raw_json: bool = False):
         endpoint_url = self.api_url + self.lookup_url + edp
         headers = self._build_headers()
         response = self._requests_get_retriable(
             endpoint_url,
             headers=headers,
+            params=params,
             timeout=self.default_timeout,
             retries=retries,
         )
@@ -98,6 +99,8 @@ class BaseAuthorizedAPIClient(BaseAPIClient):
             raise err
 
         response = response.json()
+        if return_raw_json:
+            return response
         return self.data_model(**response)
 
     def list(self, filters=None, retries=DEFAULT_RETRIES):

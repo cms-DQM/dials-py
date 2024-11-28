@@ -14,7 +14,11 @@ else:
 
 class OBaseModel(BaseModel):
     def cleandict(self):
-        return {key: value for key, value in self.dict().items() if value is not None}
+        return {
+            key: ",".join(str(v) for v in value) if isinstance(value, (list, tuple)) else value
+            for key, value in self.dict().items()
+            if value is not None
+        }
 
 
 class PaginatedBaseModel(BaseModel):
