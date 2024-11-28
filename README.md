@@ -80,11 +80,16 @@ This package interacts with DIALS api endpoints using underlying classes in `Dia
 ### Retrieving a specific object using `get`
 
 ```python
+dials.dataset_index.get(dataset_id=14677060)
 dials.file_index.get(dataset_id=14677060, file_id=3393809397)
 dials.h1d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=1)
 dials.h1d.get(dataset_id=14677060, run_number=367112, ls_number=10, me_id=96)
 dials.lumi.get(dataset_id=14677060, run_number=367112, ls_number=10)
 dials.run.get(dataset_id=14677060, run_number=367112)
+
+# jetmet worskpace
+dials.ml_models_index(model_id=1)
+dials.ml_bad_lumisection(model_id=19, dataset_id=15102369, run_number=386951, ls_number=36)
 ```
 
 ### Retrieving a list of objects per page using `list`
@@ -92,11 +97,14 @@ dials.run.get(dataset_id=14677060, run_number=367112)
 It is possible to get a list of entries from those endpoint using the `list` and `list_all` methods, the `list` method will fetch only one page and the `list_all` will fetch all available pages:
 
 ```python
+dials.dataset_index.list()
 dials.file_index.list()
 dials.h1d.list()
 dials.h2d.list()
 dials.lumi.list()
 dials.run.list()
+dials.ml_models_index.list()
+dials.ml_bad_lumisection.list()
 ```
 
 ### Retrieving all available pages of a list of objects using `list_all`
@@ -104,11 +112,14 @@ dials.run.list()
 Note: Keep in mind that running `list_all` without any filter can take too much time, since you will be retrieving all rows in the database.
 
 ```python
+dials.dataset_index.list_all()
 dials.file_index.list_all()
 dials.h1d.list_all()
 dials.h2d.list_all()
 dials.lumi.list_all()
 dials.run.list_all()
+dials.ml_models_index.list_all()
+dials.ml_bad_lumisection.list_all()
 ```
 
 If you don't need all available pages but just a subset of then, it is possible to specify a `max_pages` integer parameter:
@@ -127,8 +138,11 @@ from cmsdials.filters import (
     LumisectionHistogram1DFilters,
     LumisectionHistogram2DFilters,
     LumisectionFilters,
-    RunFilters
+    RunFilters,
+    MLBadLumisectionFilters
 )
+
+dials.dataset_index.list_all(DatasetIndexFilters(page_size=500))
 
 dials.file_index.list(FileIndexFilters(dataset__regex="2024B"))
 
@@ -139,6 +153,19 @@ dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number
 dials.lumi.list_all(LumisectionFilters(run_number=360392), max_pages=5)
 
 dials.run.list_all(RunFilters(run_number__gte=360392, run_number__lte=365000), max_pages=5)
+
+# jetmet workspace
+dials.ml_models_index.list_all(MLModelsIndexFilters(active=True))
+
+# jetmet workspace
+dials.ml_bad_lumis.list_all(
+    MLBadLumisectionFilters(
+        page_size=500,
+        model_id__in=[20,19],
+        dataset_id__in=[15042670],
+        run_number__in=[385801,385799,385764]
+    )
+)
 ```
 
 ### Dials MEs
@@ -219,6 +246,28 @@ print(len(data.results))  # 100
 data = dials.h2d.list_all(LumisectionHistogram2DFilters(me__regex="PXBarrel", ls_number=78, entries__gte=100), max_pages=10, keep_failed=True, resume_from=data)  # Resume from partial object
 print(len(data.results))  # 200
 ```
+
+## Fetching ML certification json and ML golden-like json
+
+The following examples are testable in the `jetmet` workspace:
+
+```python
+dials.ml_bad_lumis.cert_json(
+    model_id__in=[20,19],
+    dataset_id__in=[15042670],
+    run_number__in=[385801,385799,385764]
+)
+
+dials.ml_bad_lumis.golden_json(
+    model_id__in=[20,19],
+    dataset_id__in=[15042670],
+    run_number__in=[385801,385799,385764]
+)
+```
+
+You may need to query the `ml_models_index` client to fetch the models ids you are interested and the `dataset-index` client to fetch the datasets ids. Take a look in the live documentation to check all possible filters.
+
+Attention: Those endpoints doesn't return a Pydantic model, instead they are returning a plain json response. Consequently, the method `to_pandas` doesn't work on them.
 
 ## Usage with local DIALS
 
