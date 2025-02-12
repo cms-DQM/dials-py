@@ -1,3 +1,7 @@
+Repository migrated to CERN's Gitlab [here](https://gitlab.cern.ch/cms-dqmdc/libraries/dials-py).
+
+---
+
 # dials-py
 
 The Python api client interface to DIALS service.
